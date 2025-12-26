@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'one',
     'corsheaders',
     'events',
-    'media',
 ]
 
 MIDDLEWARE = [
