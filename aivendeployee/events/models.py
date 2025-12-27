@@ -7,7 +7,7 @@ class Event(models.Model):
     price = models.CharField(max_length=50)
     category = models.CharField(max_length=50)
     description = models.TextField()
-    image = CloudinaryField('image')
+    image = CloudinaryField('image', blank=True, null=True)
 
     def __str__(self):
         return self.title

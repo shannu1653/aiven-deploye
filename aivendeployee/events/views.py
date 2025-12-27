@@ -2,8 +2,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Event
 
+
 # ==============================
-# CREATE EVENT
+# CREATE EVENT (AUTO UPLOAD)
 # ==============================
 @csrf_exempt
 def create_event(request):
@@ -13,12 +14,15 @@ def create_event(request):
         price = request.POST.get("price")
         category = request.POST.get("category")
         description = request.POST.get("description")
-        image = request.FILES.get("image")
+        image = request.FILES.get("image")  # AUTO handled by CloudinaryField
 
         if not title or not date:
-            return JsonResponse({"error": "Title and Date required"}, status=400)
+            return JsonResponse(
+                {"error": "Title and Date required"},
+                status=400
+            )
 
-        Event.objects.create(
+        event = Event.objects.create(
             title=title,
             date=date,
             price=price,
@@ -27,7 +31,11 @@ def create_event(request):
             image=image
         )
 
-        return JsonResponse({"message": "Event created successfully"})
+        return JsonResponse({
+            "message": "Event created successfully",
+            "id": event.id,
+            "image": event.image.url if event.image else None
+        })
 
     return JsonResponse({"error": "Invalid request"}, status=405)
 
@@ -47,14 +55,14 @@ def get_events(request):
             "price": e.price,
             "category": e.category,
             "description": e.description,
-            "image": str(e.image)  # IMPORTANT
+            "image": e.image.url if e.image else None
         })
 
     return JsonResponse(data, safe=False)
 
 
 # ==============================
-# UPDATE EVENT
+# UPDATE EVENT (AUTO UPLOAD)
 # ==============================
 @csrf_exempt
 def update_event(request, id):
@@ -68,10 +76,12 @@ def update_event(request, id):
             event.category = request.POST.get("category")
             event.description = request.POST.get("description")
 
-            if request.FILES.get("image"):
-                event.image = request.FILES.get("image")
+            image = request.FILES.get("image")
+            if image:
+                event.image = image  # AUTO upload
 
             event.save()
+
             return JsonResponse({"message": "Event updated successfully"})
 
         except Event.DoesNotExist:

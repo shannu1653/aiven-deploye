@@ -105,12 +105,14 @@ DATABASES = {
     }
 }
 
+import cloudinary
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'Root',
-    'API_KEY': '683943112556211',
-    'API_SECRET': '7O54BkSl1BiLMfYXgqc1cPGbr3o',
-}
+cloudinary.config(
+    cloud_name = "Root",
+    api_key =  "683943112556211",
+    api_secret = "7O54BkSl1BiLMfYXgqc1cPGbr3o",
+    secure = True
+)
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
