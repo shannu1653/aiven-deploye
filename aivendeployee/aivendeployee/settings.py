@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'one',
     'corsheaders',
-    'events',
+    'events'
 ]
 
 MIDDLEWARE = [
