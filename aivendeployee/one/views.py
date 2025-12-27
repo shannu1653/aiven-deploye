@@ -48,11 +48,16 @@ def signup(request):
             place=data["place"]
         )
 
-        return JsonResponse({"message": "Signup successful"})
-    
-    return JsonResponse(
-        {"error": "Only POST method allowed"},
-        status=405)
+        return JsonResponse({
+            "success": True,
+            "message": "Signup successful"
+        }, status=201)
+
+    return JsonResponse({
+        "success": False,
+        "message": "Only POST method allowed"
+    }, status=405)
+
     
 
 from django.contrib.auth import authenticate
