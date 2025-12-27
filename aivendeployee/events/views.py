@@ -65,10 +65,11 @@ def get_events(request):
             "price": e.price,
             "category": e.category,
             "description": e.description,
-            "image": e.image  # ✅ URLField → use directly
+            "image": e.image.url if e.image else None  # ✅ FIX
         })
 
     return JsonResponse(data, safe=False)
+
 
 
 # ==============================
