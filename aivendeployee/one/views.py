@@ -63,16 +63,22 @@ def login(request):
         data = json.loads(request.body)
 
         user = authenticate(
-            username=data["username"],
-            password=data["password"]
+            username=data.get("username"),
+            password=data.get("password")
         )
 
-        if user:
-            return JsonResponse({"success": True})
+        if user is not None:
+            return JsonResponse({
+                "success": True,
+                "message": "Login successful"
+            }, status=200)
         else:
-            return JsonResponse({"success": False})
-    
+            return JsonResponse({
+                "success": False,
+                "message": "Invalid username or password"
+            }, status=401)
+
     return JsonResponse(
-        {"error": "Only POST method allowed"},
+        {"success": False, "message": "Only POST method allowed"},
         status=405
     )
