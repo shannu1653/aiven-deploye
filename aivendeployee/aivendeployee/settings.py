@@ -107,6 +107,9 @@ DATABASES = {
 # --------------------------------------------------
 # CLOUDINARY CONFIG (FIXED)
 # --------------------------------------------------
+import cloudinary
+
+# ✅ Cloudinary (SECURE)
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
@@ -114,12 +117,14 @@ cloudinary.config(
     secure=True
 )
 
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 # --------------------------------------------------
 # MEDIA & STATIC
 # --------------------------------------------------
-MEDIA_URL = '/media/'
+
 STATIC_URL = '/static/'
 
 # --------------------------------------------------

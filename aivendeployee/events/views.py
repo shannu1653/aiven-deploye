@@ -4,7 +4,7 @@ from .models import Event
 
 
 # ==============================
-# CREATE EVENT (AUTO UPLOAD)
+# CREATE EVENT (AUTO CLOUDINARY)
 # ==============================
 @csrf_exempt
 def create_event(request):
@@ -14,7 +14,7 @@ def create_event(request):
         price = request.POST.get("price")
         category = request.POST.get("category")
         description = request.POST.get("description")
-        image = request.FILES.get("image")  # AUTO handled by CloudinaryField
+        image = request.FILES.get("image")  # AUTO upload
 
         if not title or not date:
             return JsonResponse(
@@ -62,7 +62,7 @@ def get_events(request):
 
 
 # ==============================
-# UPDATE EVENT (AUTO UPLOAD)
+# UPDATE EVENT (AUTO CLOUDINARY)
 # ==============================
 @csrf_exempt
 def update_event(request, id):
