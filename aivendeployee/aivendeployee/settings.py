@@ -7,24 +7,15 @@ from dotenv import load_dotenv
 import os
 import cloudinary
 
-# --------------------------------------------------
-# ENV
-# --------------------------------------------------
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --------------------------------------------------
-# SECURITY
-# --------------------------------------------------
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ['*', '.onrender.com']
 
-# --------------------------------------------------
-# APPLICATIONS
-# --------------------------------------------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -32,21 +23,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
 
-    # 🔑 Cloudinary (ORDER MATTERS)
+    # Cloudinary
     'cloudinary',
     'cloudinary_storage',
 
     'django.contrib.staticfiles',
 
-    # Other apps
     'corsheaders',
     'one',
     'events',
 ]
 
-# --------------------------------------------------
-# MIDDLEWARE
-# --------------------------------------------------
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -60,9 +47,6 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-# --------------------------------------------------
-# URLS & WSGI
-# --------------------------------------------------
 ROOT_URLCONF = 'aivendeployee.urls'
 
 TEMPLATES = [
@@ -82,9 +66,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'aivendeployee.wsgi.application'
 
-# --------------------------------------------------
-# DATABASE (MYSQL + SSL)
-# --------------------------------------------------
 CA_CERT = os.getenv("DB_SSL_CA")
 
 DATABASES = {
@@ -97,17 +78,10 @@ DATABASES = {
         'PORT': os.getenv("DB_PORT"),
         'OPTIONS': {
             'charset': 'utf8mb4',
-            'ssl': {
-                'cadata': CA_CERT
-            }
+            'ssl': {'cadata': CA_CERT}
         }
     }
 }
-
-# --------------------------------------------------
-# CLOUDINARY CONFIG (FIXED)
-# --------------------------------------------------
-import cloudinary
 
 # ✅ Cloudinary (SECURE)
 cloudinary.config(
@@ -117,19 +91,10 @@ cloudinary.config(
     secure=True
 )
 
-
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-
-# --------------------------------------------------
-# MEDIA & STATIC
-# --------------------------------------------------
 
 STATIC_URL = '/static/'
 
-# --------------------------------------------------
-# PASSWORD VALIDATION
-# --------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -137,15 +102,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# --------------------------------------------------
-# INTERNATIONALIZATION
-# --------------------------------------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# --------------------------------------------------
-# DEFAULT PK
-# --------------------------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
