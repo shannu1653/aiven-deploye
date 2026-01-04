@@ -5,16 +5,22 @@ Django settings for aivendeployee project.
 from pathlib import Path
 from dotenv import load_dotenv
 import os
-import cloudinary
-
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ===============================
+# BASIC SETTINGS
+# ===============================
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ['*', '.onrender.com']
+
+# ===============================
+# APPLICATIONS
+# ===============================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -22,17 +28,17 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-
-    # Cloudinary
-    'cloudinary',
-    'cloudinary_storage',
-
     'django.contrib.staticfiles',
 
     'corsheaders',
+
     'one',
     'events',
 ]
+
+# ===============================
+# MIDDLEWARE
+# ===============================
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -47,15 +53,20 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# ===============================
+# URL & TEMPLATES
+# ===============================
+
 ROOT_URLCONF = 'aivendeployee.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -66,7 +77,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'aivendeployee.wsgi.application'
 
-CA_CERT = os.getenv("DB_SSL_CA")
+# ===============================
+# DATABASE – AIVEN MYSQL (SSL)
+# ===============================
+
+
+
+DB_SSL_CA = os.getenv("DB_SSL_CA")
 
 DATABASES = {
     'default': {
@@ -78,22 +95,16 @@ DATABASES = {
         'PORT': os.getenv("DB_PORT"),
         'OPTIONS': {
             'charset': 'utf8mb4',
-            'ssl': {'cadata': CA_CERT}
+            'ssl': {
+                'cadata': DB_SSL_CA   # ✅ THIS IS THE KEY FIX
+            }
         }
     }
 }
 
-# ✅ Cloudinary (SECURE)
-cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
-    secure=True
-)
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-STATIC_URL = '/static/'
+# ===============================
+# PASSWORD VALIDATION
+# ===============================
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -102,9 +113,27 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# ===============================
+# INTERNATIONALIZATION
+# ===============================
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
+
+# ===============================
+# STATIC & MEDIA (LOCAL STORAGE)
+# ===============================
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# ===============================
+# DEFAULT PRIMARY KEY
+# ===============================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
