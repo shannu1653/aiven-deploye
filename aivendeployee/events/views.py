@@ -1,11 +1,10 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Event
-import cloudinary.uploader
 
 
 # ==============================
-# CREATE EVENT (CLOUDINARY)
+# CREATE EVENT (LOCAL MEDIA)
 # ==============================
 @csrf_exempt
 def create_event(request):
@@ -20,31 +19,19 @@ def create_event(request):
         if not title or not date:
             return JsonResponse({"error": "Title and Date required"}, status=400)
 
-        image_url = None
-
-        # ✅ Upload to Cloudinary
-        if image_file:
-            upload = cloudinary.uploader.upload(
-                image_file,
-                folder="events",
-                use_filename=True,
-                unique_filename=True
-            )
-            image_url = upload["secure_url"]
-
         event = Event.objects.create(
             title=title,
             date=date,
             price=price,
             category=category,
             description=description,
-            image=image_url
+            image=image_file   # ✅ direct save
         )
 
         return JsonResponse({
             "message": "Event created successfully",
             "id": event.id,
-            "image": image_url
+            "image": event.image.url if event.image else None
         })
 
     return JsonResponse({"error": "Invalid request"}, status=405)
@@ -65,15 +52,14 @@ def get_events(request):
             "price": e.price,
             "category": e.category,
             "description": e.description,
-            "image": e.image.url if e.image else None  # ✅ FIX
+            "image": e.image.url if e.image else None
         })
 
     return JsonResponse(data, safe=False)
 
 
-
 # ==============================
-# UPDATE EVENT (CLOUDINARY)
+# UPDATE EVENT (LOCAL MEDIA)
 # ==============================
 @csrf_exempt
 def update_event(request, id):
@@ -81,23 +67,17 @@ def update_event(request, id):
         try:
             event = Event.objects.get(id=id)
 
-            event.title = request.POST.get("title")
-            event.date = request.POST.get("date")
-            event.price = request.POST.get("price")
-            event.category = request.POST.get("category")
-            event.description = request.POST.get("description")
+            event.title = request.POST.get("title", event.title)
+            event.date = request.POST.get("date", event.date)
+            event.price = request.POST.get("price", event.price)
+            event.category = request.POST.get("category", event.category)
+            event.description = request.POST.get("description", event.description)
 
             image_file = request.FILES.get("image")
 
-            # ✅ Upload new image only if provided
+            # ✅ Update image only if new image sent
             if image_file:
-                upload = cloudinary.uploader.upload(
-                    image_file,
-                    folder="events",
-                    use_filename=True,
-                    unique_filename=True
-                )
-                event.image = upload["secure_url"]
+                event.image = image_file
 
             event.save()
 
