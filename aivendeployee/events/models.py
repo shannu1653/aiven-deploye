@@ -1,5 +1,4 @@
 from django.db import models
-from cloudinary.models import CloudinaryField
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
@@ -7,7 +6,12 @@ class Event(models.Model):
     price = models.CharField(max_length=50)
     category = models.CharField(max_length=50)
     description = models.TextField()
-    image = CloudinaryField('image', blank=True, null=True)
+
+    image = models.ImageField(
+        upload_to="events/",
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.title
